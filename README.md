@@ -17,11 +17,11 @@ Convert a number or money into a localized string (Georgian).
 Default currency is "ლარი" and "თეთრი".
 
 	<?php
-	echo translate_number(120.5, true);
+	echo translate_number(120.5, true);	// ას ოცდახუთი ლარი და 50 თეთრი
 	?>
 
 You can also set your own currency strings.
 
 	<?php
-	echo translate_number(1.8, true, "მანეთი", "კაპიკი");
+	echo translate_number(1.8, true, "მანეთი", "კაპიკი"); // ერთი მანეთი და 80 კაპიკი
 	?>
