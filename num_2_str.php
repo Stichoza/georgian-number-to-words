@@ -11,7 +11,7 @@
 function translate_number($number, $to_currency = false, $currency_1 = "ლარი", $currency_2 = "თეთრი") {
 	if ($to_currency) {
 		$number = explode(".", round($number, 2));
-		//$number[1] = ($number[1] < 10)
+		if (empty($number[1])) $number[1] = 0;
 		return translate_number_ge($number[0]) . " " . $currency_1
 		. " და " . $number[1] . " " . $currency_2;
 	} else {
