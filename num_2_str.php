@@ -1,14 +1,23 @@
 <?php
 
 /*
-*  Convert a number into a localized string (Georgian).
+*	Convert a number into a localized string (Georgian).
 *	Only numbers in [2^31; 2^31-1] range (+/- ~2 milliards, 2*(10^9)) are supported.
 *
-*	Original author:	alex_sh
-*	Forked by:			Stichoza
-*
-*	usage: $number = translate_number_ge(930521);
+*	Numeric conversion:		alex_sh
+*	Conversion with currency:	Stichoza
 */
+
+function translate_number($number, $to_currency = false, $currency_1 = "ლარი", $currency_2 = "თეთრი") {
+	if ($to_currency) {
+		$number = explode(".", round($number, 2));
+		//$number[1] = ($number[1] < 10)
+		return translate_number_ge($number[0]) . " " . $currency_1
+		. " და " . $number[1] . " " . $currency_2;
+	} else {
+		return translate_number_ge($number);
+	}
+}
 
 function _translate_lookup_code_ge($num_code) {
 	static $number_names = array(
