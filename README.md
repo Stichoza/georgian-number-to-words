@@ -3,13 +3,17 @@
 Convert a number or money into a localized string (Georgian).
 რიცხვების გადაყვანა სიტყვიერად, ქართულ ენაზე. როგორც უბრალო რიცხვი, ასევე თანხა.
 
+### Currently available
+- PHP
+- JavaScript
+
 ## Usage
 ### Numeric conversion:
 
-666 will be converted to ექვსას სამოცდაექვსი.
+321 will be converted to სამას ოცდაერთი.
 
 	<?php
-	echo translate_number(666);
+	echo translate_number(321);
 	?>
 
 ### Currency conversion
