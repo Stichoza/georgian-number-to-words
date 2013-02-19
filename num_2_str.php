@@ -10,10 +10,11 @@
 
 function translate_number($number, $to_currency = false, $currency_1 = "ლარი", $currency_2 = "თეთრი") {
 	if ($to_currency) {
-		$number = explode(".", round($number, 2));
-		if (empty($number[1])) $number[1] = 0;
-		return translate_number_ge($number[0]) . " " . $currency_1
-		. " და " . $number[1] . " " . $currency_2;
+		$money_1 = intval($number);
+		$money_2 = $number-$money_1;
+		$money_2 = (empty($money_2)) ? 0 : round($money_2, 2)*100;
+		return translate_number_ge($money_1) . " " . $currency_1
+		. " და " . $money_2 . " " . $currency_2;
 	} else {
 		return translate_number_ge($number);
 	}
