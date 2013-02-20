@@ -8,7 +8,7 @@ function translate_number(numb, to_currency, currency_1, currency_2) {
 
 		return translate_number_ge(money_1) + " " + currency_1 + " და " + money_2 + " " + currency_2;
 	} else {
-		return translate_number_ge(numb);
+		return translate_number_ge(parseInt(numb, 10));
 	}
 }
 
