@@ -31,3 +31,6 @@ You can also set your own currency strings.
 	<?php
 	echo translate_number(1.8, true, "მანეთი", "კაპიკი"); // ერთი მანეთი და 80 კაპიკი
 	?>
+
+## Demo
+- JavaScript Demo: http://jsfiddle.net/stichoza/PA4f5/
