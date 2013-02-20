@@ -3,6 +3,8 @@
 Convert a number or money into a localized string (Georgian).
 რიცხვების გადაყვანა სიტყვიერად, ქართულ ენაზე. როგორც უბრალო რიცხვი, ასევე თანხა.
 
+Supported range is **`(-1,000,000,000,000; 1,000,000,000,000)`**, but higher numbers may be also implemented.
+
 ### Currently available
 - PHP
 - JavaScript
