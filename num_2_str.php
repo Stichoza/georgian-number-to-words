@@ -10,7 +10,7 @@
 
 function translate_number($number, $to_currency = false, $currency_1 = "ლარი", $currency_2 = "თეთრი") {
 	if ($to_currency) {
-		$money_1 = intval($number);
+		$money_1 = floor(floatval($number));
 		$money_2 = abs($number-$money_1);
 		$money_2 = (empty($money_2)) ? 0 : round($money_2, 2)*100;
 		return translate_number_ge($money_1) . " " . $currency_1
@@ -76,6 +76,8 @@ function _translate_lookup_code_ge($num_code) {
 }
 
 function translate_number_ge($num) {
+	$num = floatval($num);
+	
 	if (!is_numeric($num))
 		$num = 0;
 
@@ -153,8 +155,8 @@ function translate_number_ge($num) {
 
 
 	if ($num > pow(10, 9)) {
-		$digit = ($num - ($num % pow(10, 9))) / pow(10, 9);
-		$remainder = ($num % pow(10, 9));
+		$remainder = fmod($num , pow(10, 9));
+		$digit = intval(($num - $remainder) / pow(10, 9));
 
 	if ($remainder == 0)
 		return translate_number_ge($digit) . " " . _translate_lookup_code_ge("number_1000000000", "ge");
