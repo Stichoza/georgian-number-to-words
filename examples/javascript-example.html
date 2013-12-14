@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Demo [money-num-to-string]</title>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+        <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+        <script async src="../js/num2str.min.js"></script>
+        <style>
+        body {
+            margin: 2em auto;
+            max-width: 960px;
+        }
+        #translation {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        </style>
+        <script>
+			$(document).ready(function() {
+                $("input").change(updateData).keyup(updateData);
+                function updateData() {
+                    var number = $("#number").val();
+                    var isCurrency = $("#is-currency").is(':checked');
+                    var currencyOne = $("#currency-one").val();
+                    var currencyTwo = $("#currency-two").val();
+                    var translation = translate_number(number, isCurrency, currencyOne, currencyTwo);
+                    $("#translation").text(translation);
+                }
+			});
+        </script>
+    </head>
+    <body>
+        <h1>
+            <span>Demo [money-num-to-string]</span>
+            <small><a href="https://github.com/Stichoza/money-num-to-string/">View on GitHub</a></small>
+        </h1>
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <div class="col-sm-12">
+                <input type="number" class="form-control" id="number" placeholder="რიცხვი/თანხა"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12">
+                <input type="text" class="form-control" id="currency-one" placeholder="ვალუტა" value="დოლარი"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12">
+                <input type="text" class="form-control" id="currency-two" placeholder="ვალუტა (ხურდა)" value="ცენტი"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <div class="checkbox">
+                <label>
+                    <input id="is-currency" type="checkbox"/> ვალუტა
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <pre id="translation">(აქ იქნება თარგმანი)</pre>
+            </div>
+          </div>
+        </form>
+    </body>
+</html>
