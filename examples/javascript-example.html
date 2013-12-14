@@ -17,7 +17,7 @@
         }
         </style>
         <script>
-			$(document).ready(function() {
+            $(document).ready(function() {
                 $("input").change(updateData).keyup(updateData);
                 function updateData() {
                     var number = $("#number").val();
@@ -27,7 +27,7 @@
                     var translation = translate_number(number, isCurrency, currencyOne, currencyTwo);
                     $("#translation").text(translation);
                 }
-			});
+            });
         </script>
     </head>
     <body>
