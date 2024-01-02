@@ -4,164 +4,226 @@ namespace Stichoza\GeorgianNumberToWords;
 
 class NumberConverter
 {
-    function translate_number($number, $to_currency = false, $currency_1 = "ლარი", $currency_2 = "თეთრი") {
-        if ($to_currency) {
-            $money_1 = floor(floatval($number));
-            $money_2 = abs($number-$money_1);
-            $money_2 = (empty($money_2)) ? 0 : round($money_2, 2)*100;
-            return translate_number_ge($money_1) . " " . $currency_1
-                . " და " . $money_2 . " " . $currency_2;
-        } else {
-            return translate_number_ge($number);
-        }
+    protected float $number;
+
+    protected bool $asCurrency = false;
+
+    protected string $currency;
+
+    protected string $subCurrency;
+
+    protected static array $numberNames = [
+        "number_minus" => "მინუს",
+        "number_0" => "ნული",
+        "number_1" => "ერთი",
+        "number_1_" => "ერთი",
+        "number_2" => "ორი",
+        "number_2_" => "ორ",
+        "number_3" => "სამი",
+        "number_3_" => "სამ",
+        "number_4" => "ოთხი",
+        "number_4_" => "ოთხ",
+        "number_5" => "ხუთი",
+        "number_5_" => "ხუთ",
+        "number_6" => "ექვსი",
+        "number_6_" => "ექვს",
+        "number_7" => "შვიდი",
+        "number_7_" => "შვიდ",
+        "number_8" => "რვა",
+        "number_8_" => "რვა",
+        "number_9" => "ცხრა",
+        "number_9_" => "ცხრა",
+        "number_10" => "ათი",
+        "number_11" => "თერთმეტი",
+        "number_12" => "თორმეტი",
+        "number_13" => "ცამეტი",
+        "number_14" => "თოთხმეტი",
+        "number_15" => "თხუთმეტი",
+        "number_16" => "თექვსმეტი",
+        "number_17" => "ჩვიდმეტი",
+        "number_18" => "თვრამეტი",
+        "number_19" => "ცხრამეტი",
+        "number_20" => "ოცი",
+        "number_20_" => "ოცდა",
+        "number_40" => "ორმოცი",
+        "number_40_" => "ორმოცდა",
+        "number_60" => "სამოცი",
+        "number_60_" => "სამოცდა",
+        "number_80" => "ოთხმოცი",
+        "number_80_" => "ოთხმოცდა",
+        "number_100" => "ასი",
+        "number_100_" => "ას",
+        "number_1000" => "ათასი",
+        "number_1000_" => "ათას",
+        "number_1000000" => "მილიონი",
+        "number_1000000_" => "მილიონ",
+        "number_1000000000" => "მილიარდი",
+        "number_1000000000_" => "მილიარდ",
+    ];
+
+    public function __construct(float|int|string|null $number = null, bool $asCurrency = false, string $currency = 'ლარი', string $subCurrency = 'თეთრი') {
+        $this->number = (float) $number;
+        $this->asCurrency = $asCurrency;
+        $this->currency = $currency;
+        $this->subCurrency = $subCurrency;
     }
 
-    function _translate_lookup_code_ge($num_code) {
-        static $number_names = array(
-            "number_minus" => "მინუს",
-            "number_0" => "ნული",
-            "number_1" => "ერთი",
-            "number_1_" => "ერთი", // not really needed
-            "number_2" => "ორი",
-            "number_2_" => "ორ",
-            "number_3" => "სამი",
-            "number_3_" => "სამ",
-            "number_4" => "ოთხი",
-            "number_4_" => "ოთხ",
-            "number_5" => "ხუთი",
-            "number_5_" => "ხუთ",
-            "number_6" => "ექვსი",
-            "number_6_" => "ექვს",
-            "number_7" => "შვიდი",
-            "number_7_" => "შვიდ",
-            "number_8" => "რვა",
-            "number_8_" => "რვა",
-            "number_9" => "ცხრა",
-            "number_9_" => "ცხრა",
-            "number_10" => "ათი",
-            "number_11" => "თერთმეტი",
-            "number_12" => "თორმეტი",
-            "number_13" => "ცამეტი",
-            "number_14" => "თოთხმეტი",
-            "number_15" => "თხუთმეტი",
-            "number_16" => "თექვსმეტი",
-            "number_17" => "ჩვიდმეტი",
-            "number_18" => "თვრამეტი",
-            "number_19" => "ცხრამეტი",
-            "number_20" => "ოცი",
-            "number_20_" => "ოცდა",
-            "number_40" => "ორმოცი",
-            "number_40_" => "ორმოცდა",
-            "number_60" => "სამოცი",
-            "number_60_" => "სამოცდა",
-            "number_80" => "ოთხმოცი",
-            "number_80_" => "ოთხმოცდა",
-            "number_100" => "ასი",
-            "number_100_" => "ას",
-            "number_1000" => "ათასი",
-            "number_1000_" => "ათას",
-            "number_1000000" => "მილიონი",
-            "number_1000000_" => "მილიონ",
-            "number_1000000000" => "მილიარდი",
-            "number_1000000000_" => "მილიარდ"
-
-            // the higher numbers may be implemented in short-scale or long-scale styles.
-            // we don't need them anyway.
-        );
-        return (isset($number_names[$num_code]) ? $number_names[$num_code] : "");
+    public static function make(float|int|string|null $number = null): self
+    {
+        return new self($number);
     }
 
-    function translate_number_ge($num) {
-        $num = floatval($num);
+    public function number(float|int|string|null $number = null): string
+    {
+        $number ??= $this->number;
 
-        if (!is_numeric($num))
-            $num = 0;
+        [$integer, , $fractionalValue, $denominator] = $this->splitNumber($number);
 
-        if ($num < 0)
-            return _translate_lookup_code_ge("number_minus", "ge") . " " . translate_number_ge(-$num);
+        $result = $this->translateNumber($integer);
 
-        if ($num <= 20 || $num == 40 || $num == 60 || $num == 80 || $num == 100)
-            return _translate_lookup_code_ge("number_{$num}", "ge");
+        if ($fractionalValue > 0) {
 
-        if ($num < 40)
-            return _translate_lookup_code_ge("number_20_", "ge") . translate_number_ge($num - 20);
-
-        if ($num < 60)
-            return _translate_lookup_code_ge("number_40_", "ge") . translate_number_ge($num - 40);
-
-        if ($num < 80)
-            return _translate_lookup_code_ge("number_60_", "ge") . translate_number_ge($num - 60);
-
-        if ($num < 100)
-            return _translate_lookup_code_ge("number_80_", "ge") . translate_number_ge($num - 80);
-
-
-        if ($num < 1000) {
-            $digit = ($num - ($num % 100)) / 100;
-            $remainder = ($num % 100);
-            if ($remainder == 0) {
-                return ($digit == 1 ? "" : _translate_lookup_code_ge("number_{$digit}_", "ge"))
-                    . _translate_lookup_code_ge("number_100", "ge");
+            if ($number < 0 && $integer === 0) {
+                $result = $this->lookup('number_minus') . ' ' . $result; // Example: -0.1
             }
 
-            return ($digit == 1 ? "" : _translate_lookup_code_ge("number_{$digit}_", "ge"))
-                . _translate_lookup_code_ge("number_100_", "ge") . " " . translate_number_ge($remainder);
+            $result .= ' მთელი ' . ($integer ? 'და ' : '')
+                . $this->translateNumber($fractionalValue)
+                . ' მე' . str_replace(' ', '', mb_substr($this->translateNumber($denominator), 0, -1)) . 'ედი';
         }
 
-        if ($num == 1000)
-            return _translate_lookup_code_ge("number_1000", "ge");
+        return $result;
+    }
 
+    public function money(float|int|string|null $amount = null, ?string $currency = null, ?string $subCurrency = null, int $precision = 2): string
+    {
+        $amount ??= $this->number;
 
-        if ($num < pow(10, 6)) {
-            $digit = ($num - ($num % 1000)) / 1000;
-            $remainder = ($num % 1000);
+        $currency ??= $this->currency;
+        $subCurrency ??= $this->subCurrency;
 
-            if ($remainder == 0)
-                return translate_number_ge($digit) . " " . _translate_lookup_code_ge("number_1000", "ge");
+        [$integer, $fractional] = $this->splitNumber($amount);
+
+        $fractional = $fractional ? round($fractional, $precision) * (10 ** $precision) : 0;
+
+        return $this->translateNumber($integer) . ' ' . $currency . ' და ' . $this->translateNumber($fractional) . ' ' . $subCurrency;
+    }
+
+    protected function translateNumber(float|int|string $number): string
+    {
+        $number = (float) $number;
+
+        if (!is_numeric($number)) {
+            throw new \RuntimeException('Number is not numeric');
+        }
+
+        if ($number < 0) {
+            return $this->lookup('number_minus') . ' ' . $this->translateNumber(-$number);
+        }
+
+        if ($number <= 20 || $number == 40 || $number == 60 || $number == 80 || $number == 100) {
+            return $this->lookup('number_' . $number);
+        }
+
+        if ($number < 40) {
+            return $this->lookup("number_20_") . $this->translateNumber($number - 20);
+        }
+
+        if ($number < 60) {
+            return $this->lookup("number_40_") . $this->translateNumber($number - 40);
+        }
+
+        if ($number < 80) {
+            return $this->lookup("number_60_") . $this->translateNumber($number - 60);
+        }
+
+        if ($number < 100) {
+            return $this->lookup("number_80_") . $this->translateNumber($number - 80);
+        }
+
+        if ($number < 1000) {
+            $digit = ($number - ($number % 100)) / 100;
+            $remainder = $number % 100;
+            if ($remainder == 0) {
+                return ($digit == 1 ? '' : $this->lookup("number_{$digit}_")) . $this->lookup("number_100");
+            }
+
+            return ($digit == 1 ? "" : $this->lookup("number_{$digit}_"))
+                . $this->lookup("number_100_") . " " . $this->translateNumber($remainder);
+        }
+
+        if ($number == 1000) {
+            return $this->lookup("number_1000");
+        }
+
+        if ($number < (10 ** 6)) {
+            $digit = ($number - ($number % 1000)) / 1000;
+            $remainder = ($number % 1000);
+
+            if ($remainder == 0) {
+                return $this->translateNumber($digit) . " " . $this->lookup("number_1000");
+            }
 
             if ($digit == 1) {
-                // don't do "erti atas ..."
-                //	return _translate_lookup_code_ge("number_1_", "ge") . " "
-                //	. _translate_lookup_code_ge("number_1000_", "ge") . " " . translate_number_ge($remainder);
-                return _translate_lookup_code_ge("number_1000_", "ge") . " " . translate_number_ge($remainder);
+                return $this->lookup("number_1000_") . ' ' . $this->translateNumber($remainder);
             }
 
-            return translate_number_ge($digit) . " " . _translate_lookup_code_ge("number_1000_", "ge")
-                . " " . translate_number_ge($remainder);
+            return $this->translateNumber($digit) . ' ' . $this->lookup("number_1000_")
+                . ' ' . $this->translateNumber($remainder);
         }
 
-        if ($num == pow(10, 6))
-            return _translate_lookup_code_ge("number_1", "ge") . " " . _translate_lookup_code_ge("number_1000000", "ge");
-
-        if ($num < pow(10, 9)) {
-            $digit = ($num - ($num % pow(10, 6))) / pow(10, 6);
-            $remainder = ($num % pow(10, 6));
-
-            if ($remainder == 0)
-                return translate_number_ge($digit) . " " . _translate_lookup_code_ge("number_1000000", "ge");
-
-            //	if ($digit == 1)
-            //	return _po("number_1_") . " " . _po("number_1000000_") . " " . translate_number_ge($remainder);
-            return translate_number_ge($digit) . " " . _translate_lookup_code_ge("number_1000000_", "ge")
-                . " " . translate_number_ge($remainder);
+        if ($number == (10 ** 6)) {
+            return $this->lookup("number_1") . " " . $this->lookup("number_1000000");
         }
 
-        if ($num == pow(10, 9))
-            return _translate_lookup_code_ge("number_1", "ge") . " " . _translate_lookup_code_ge("number_1000000000", "ge");
+        if ($number < (10 ** 9)) {
+            $digit = ($number - ($number % (10 ** 6))) / (10 ** 6);
+            $remainder = ($number % (10 ** 6));
 
+            if ($remainder == 0) {
+                return $this->translateNumber($digit) . " " . $this->lookup("number_1000000");
+            }
 
-        if ($num > pow(10, 9)) {
-            $remainder = fmod($num , pow(10, 9));
-            $digit = intval(($num - $remainder) / pow(10, 9));
-
-            if ($remainder == 0)
-                return translate_number_ge($digit) . " " . _translate_lookup_code_ge("number_1000000000", "ge");
-
-            //	if ($digit == 1)
-            //	return _po("number_1_") . " " . _po("number_1000000000_") . " " . translate_number_ge($remainder);
-            return translate_number_ge($digit) . " " . _translate_lookup_code_ge("number_1000000000_", "ge")
-                . " " . translate_number_ge($remainder);
+            return $this->translateNumber($digit) . " " . $this->lookup("number_1000000_")
+                . " " . $this->translateNumber($remainder);
         }
-        return $num;
+
+        if ($number == (10 ** 9)) {
+            return $this->lookup("number_1") . " " . $this->lookup("number_1000000000");
+        }
+
+
+        if ($number > (10 ** 9)) {
+            $remainder = fmod($number , 10 ** 9);
+            $digit = (int) (($number - $remainder) / (10 ** 9));
+
+            if ($remainder == 0) {
+                return $this->translateNumber($digit) . " " . $this->lookup("number_1000000000");
+            }
+
+            return $this->translateNumber($digit) . " " . $this->lookup("number_1000000000_") . " " . $this->translateNumber($remainder);
+        }
+
+        return $number;
+    }
+
+    /**
+     * @return array<int>
+     */
+    protected function splitNumber(float|int|string|null $number = null): array
+    {
+        $number = (float) $number;
+
+        $integer = (int) $number;
+        $fractional = (float) ('0.' . (explode('.', $number)[1] ?? '0')); // abs($number - $integer), but without screwing up
+        $denominator = $fractional === 0. ? 1 : 10 ** (strlen($fractional) - 2);
+        $fractionalValue = $fractional * $denominator;
+
+        return [$integer, $fractional, $fractionalValue, $denominator];
+    }
+
+    protected function lookup(string $code): ?string
+    {
+        return self::$numberNames[$code] ?? throw new \RuntimeException('Translation not found');
     }
 }
